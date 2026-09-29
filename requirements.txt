@@ -1,0 +1,12 @@
+# Pinned to versions that still support Python 3.7.
+# Bootstrap/build tools
+pip==24.0
+setuptools==67.8.0
+wheel==0.42.0
+
+# Runtime dependency and its transitive dependencies
+requests==2.31.0
+certifi==2024.8.30
+charset-normalizer==3.3.2
+idna==3.10
+urllib3==1.26.20
