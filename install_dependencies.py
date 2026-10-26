@@ -14,9 +14,10 @@ def main():
     requirements_file = os.path.join(project_dir, "requirements.txt")
 
     commands = [
-        [sys.executable, "-m", "pip", "install", "--upgrade", "pip==24.0"],
+        [sys.executable, "-m", "pip", "install", "--upgrade", "pip==26.2.2."],
         [sys.executable, "-m", "pip", "install", "-r", requirements_file],
         [sys.executable, "-m", "pip", "install", "--no-build-isolation", "-e", project_dir],
+        [sys.executable, "-m", "pip", "install", "twine"],
     ]
 
     for command in commands:
