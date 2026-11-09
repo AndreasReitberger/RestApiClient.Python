@@ -5,8 +5,8 @@ import json
 import os
 import time
 from collections import namedtuple
-from typing import Any, Callable, Dict, Mapping, Optional, Type
-from urllib.parse import urljoin, urlparse
+#from typing import Any, Callable, Dict, Mapping, Optional, Type
+from urllib.parse import urljoin, urlparse, urlencode, quote
 
 import requests
 
@@ -19,7 +19,7 @@ RestApiRequestResponse = namedtuple(
 )
 
 
-class RestApiClient(object):
+class RestApiClient():
     """Base class for API-specific clients.
 
     Subclass this class and add endpoint methods that call ``send_request``.
@@ -27,7 +27,7 @@ class RestApiClient(object):
     returned response contains decoded JSON when possible, otherwise text.
     """
 
-    _instance = None
+    #_instance = None
 
     def __init__(self, base_url="", headers=None, auth=None, timeout=30,
                  verify=True, session=None, max_retries=0, retry_backoff=0.25,
@@ -44,32 +44,47 @@ class RestApiClient(object):
         self.raise_for_status = raise_for_status
         self._last_request_at = 0.0
 
-    @classmethod
-    def set_instance(cls, instance):
-        """Set a process-wide convenience instance for the calling subclass."""
-        cls._instance = instance
+    #@classmethod
+    #def set_instance(cls, instance):
+    #    """Set a process-wide convenience instance for the calling subclass."""
+    #    cls._instance = instance
 
-    @classmethod
-    def get_instance(cls):
-        """Return the process-wide convenience instance, if configured."""
-        return cls._instance
+    #@classmethod
+    #def get_instance(cls):
+    #    """Return the process-wide convenience instance, if configured."""
+    #    return cls._instance
 
-    @classmethod
-    def instance(cls):
-        """Compatibility accessor for code that prefers ``Client.instance()``."""
-        return cls.get_instance()
+    #@classmethod
+    #def instance(cls):
+    #    """Compatibility accessor for code that prefers ``Client.instance()``."""
+    #    return cls.get_instance()
+
+    #def build_url(self, path="", url_segments=None, query=None):
+    #    """Build an endpoint URL; ``{name}`` path tokens use url_segments."""
+    #    path = str(path or "")
+    #    if url_segments:
+    #        #if isinstance(url_segments, Mapping):
+    #        #    path = path.format(**url_segments)
+    #        #else:
+    #        path = path.format(*url_segments)
+    #    parsed = urlparse(path)
+    #    url = path if parsed.scheme else urljoin(self.base_url, path.lstrip("/"))
+    #    return url
 
     def build_url(self, path="", url_segments=None, query=None):
-        """Build an endpoint URL; ``{name}`` path tokens use url_segments."""
+        """Build endpoint URL."""
         path = str(path or "")
-        if url_segments:
-            if isinstance(url_segments, Mapping):
-                path = path.format(**url_segments)
-            else:
-                path = path.format(*url_segments)
         parsed = urlparse(path)
-        url = path if parsed.scheme else urljoin(self.base_url, path.lstrip("/"))
+        url = path if parsed.scheme else urljoin(
+            self.base_url,
+            path.lstrip("/")
+        )
+        # URL Parameter anhängen
+        if isinstance(url_segments, dict) and url_segments:
+            separator = "&" if "?" in url else "?"
+            url += separator + urlencode(url_segments)
         return url
+
 
     def send_request(self, method, path="", params=None, headers=None, json_body=None,
                      data=None, files=None, auth=None, timeout=None, verify=None,
@@ -98,6 +113,7 @@ class RestApiClient(object):
         attempt = 0
         while True:
             try:
+                #print(f"Params: {params}, Headers: {merged_headers}, JSON Body: {json_body}, Data: {data}, Files: {files}")
                 response = self.session.request(
                     method=method.upper(), url=url, params=params,
                     headers=merged_headers, json=json_body, data=data, files=files,

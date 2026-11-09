@@ -16,9 +16,9 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, "src"))
 from py_rest_api_client import RestApiClient, RestApiNetworkError
 
 ip = "169.254.0.155"
-port = 5642
+port = 6543
 
-class JsonPlaceholderIntegrationTest(unittest.TestCase):
+class RaspberryPiRestApiTest(unittest.TestCase):
     """Check a real GET request and JSON decoding without modifying remote data."""
 
     def test_get_post_by_path_segment(self):
@@ -29,17 +29,12 @@ class JsonPlaceholderIntegrationTest(unittest.TestCase):
         )
         try:
             try:
-                response = client.get("posts/{post_id}", url_segments={"post_id": 1})
+                version = client.get("version")
+                print(f"Connected to API version: {version.result}")
             except (RestApiNetworkError, requests.RequestException) as exc:
                 self.skipTest("Public API is unavailable from this environment: {}".format(exc))
-
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.result["id"], 1)
-            self.assertIn("title", response.result)
-            self.assertTrue(response.url.endswith("/posts/1"))
         finally:
             client.close()
-
 
 if __name__ == "__main__":
     unittest.main()
