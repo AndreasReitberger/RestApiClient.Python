@@ -18,6 +18,7 @@ def main():
         [sys.executable, "-m", "pip", "install", "-r", requirements_file],
         [sys.executable, "-m", "pip", "install", "--no-build-isolation", "-e", project_dir],
         [sys.executable, "-m", "pip", "install", "twine"],
+        [sys.executable, "-m", "pip", "install", "build"],
     ]
 
     for command in commands:

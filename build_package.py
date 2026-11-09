@@ -15,31 +15,18 @@ def main():
     if not os.path.isdir(dist_dir):
         os.makedirs(dist_dir)
 
-    # Use the pinned setuptools and wheel already installed by
-    # install_dependencies.py; avoid fetching a separate isolated build env.
+    # Build the project using the build module, which creates both wheel and source distributions.
     subprocess.check_call(
         [
             sys.executable,
             "-m",
-            "pip",
-            "wheel",
-            "--no-deps",
-            "--no-build-isolation",
-            "--wheel-dir",
-            dist_dir,
-            project_dir,
-        ]
-    )
-    subprocess.check_call(
-        [
-            sys.executable,
-            "setup.py",
-            "sdist",
-            "--dist-dir",
+            "build",
+            "--outdir",
             dist_dir,
         ],
         cwd=project_dir,
     )
+
 
     sys.stdout.write("Wheel and source distribution created in: {}\n".format(dist_dir))
     return 0
