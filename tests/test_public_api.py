@@ -15,19 +15,21 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, "src"))
 
 from py_rest_api_client import RestApiClient, RestApiNetworkError
 
+public_rest_api_url = "https://jsonplaceholder.typicode.com"
 
 class JsonPlaceholderIntegrationTest(unittest.TestCase):
     """Check a real GET request and JSON decoding without modifying remote data."""
 
     def test_get_post_by_path_segment(self):
         client = RestApiClient(
-            "https://jsonplaceholder.typicode.com",
+            public_rest_api_url,
             timeout=10,
             max_retries=1,
         )
         try:
             try:
-                response = client.get("posts/{post_id}", url_segments={"post_id": 1})
+                response = client.get("posts", url_segments={"post_id": 1})
+                print(f"Connected to API:{public_rest_api_url}, received response: {response.result}")
             except (RestApiNetworkError, requests.RequestException) as exc:
                 self.skipTest("Public API is unavailable from this environment: {}".format(exc))
 
